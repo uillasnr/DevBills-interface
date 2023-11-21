@@ -5,7 +5,7 @@ export const color = {
     success: '#00ED64',
     info: '#016BF8',
     warning: '#FFC010',
-    error: 'DB3030',
+    error: '#cf0d0d',
     white: '#F9FBFA',
     light: '#E8EDEB',
     neutral: '#C1C7C6',
