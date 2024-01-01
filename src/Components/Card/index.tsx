@@ -29,14 +29,14 @@ export function Card({ variant = 'balance', title, amount }: CardProps) {
         const response = await api.get('transactions/deshboard');
         const { data } = response;
         console.log(data);
-        setTransactions(data[variant]); // Access the corresponding property based on variant
+        setTransactions(data[variant]);
       } catch (error) {
         console.error('Error loading transactions:', error);
       }
     }
 
     loadTransactions();
-  }, [variant]); // Make sure to include variant in the dependency array if it affects the API call
+  }, [variant]); 
 
   return (
     <Container variant={variant}>
