@@ -15,23 +15,32 @@ const variantColorMap = {
 
 export const Container = styled.div<ContainerProps>`
   display: flex;
-  flex-direction: column;
+   flex-direction: column; 
+ align-items: center;
   padding: 1rem;
   gap: 0.5rem;
   background-color: ${color.colors.dark};
-  border-radius: 0.25rem;
+  box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 0.50rem;
   width: 100%;
+  height: 5rem;
+
+  div{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
 
   svg {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 2rem;
+    height: 2rem;
     fill: ${(props) => variantColorMap[props.variant]};
   }
 
   span {
     font-size: 0.9rem;
     font-weight: 300;
-    color: ${color.colors.neutral};
+    color: ${color.colors.white};
   }
 
   strong {

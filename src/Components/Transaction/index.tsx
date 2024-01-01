@@ -1,5 +1,8 @@
 import { formatCurrency } from '../../utils/format-currency';
-import { Container, Info, Content } from './styles';
+import { Container, Info, Content,ContainerItem } from './styles';
+import { useEffect, useState } from 'react';
+import { api } from '../../services/Api';
+import { formatDate } from '../../utils/formatDate';
 
 type TransactionProps = {
   id: number;
@@ -13,28 +16,47 @@ type TransactionProps = {
   variant?: 'income' | 'expense';
 };
 
-export function Transaction({
-  id,
-  title,
-  date,
-  amount,
-  category,
-  variant = 'income',
-}: TransactionProps) {
+
+export function Transaction() {
+  const [transactions, setTransactions] = useState<TransactionProps[]>([]);
+
+  useEffect(() => {
+    async function loadTransactions() {
+      try {
+        const response = await api.get('/transactions');
+        const { data } = response;
+      /*   console.log(data); */
+        setTransactions(data);
+      } catch (error) {
+        console.error('Error loading transactions:', error);
+      }
+    }
+
+    loadTransactions();
+  }, []);
+
   return (
     <Container>
-      <Info>
-        <span>#{id.toString().padStart(4, '0')}</span>
-        <div>
-          <strong>{title}</strong>
-          <span>{date}</span>
-        </div>
-      </Info>
+      {transactions.map((transaction) => (
 
-      <Content $variant={variant} $topColor={category.color}>
-        <strong>{formatCurrency(amount)}</strong>
-        <span>{category.title.toUpperCase()}</span>
-      </Content>
+        <ContainerItem key={transaction.id}>
+          <Info >
+           {/* <span>#{transaction.id.toString().padStart(4, '0')}</span> */}
+           <span>#123</span>
+            <div>
+              <strong>{transaction.title}</strong>
+              <span>{formatDate(transaction.date)}</span>
+            </div>
+          </Info>
+
+          <Content $variant={transaction.variant} $topColor={transaction.category.color}>
+            <strong>{formatCurrency(transaction.amount)}</strong>
+            <span>{transaction.category.title.toUpperCase()}</span>
+          </Content>
+        </ContainerItem>
+
+      ))}
     </Container>
   );
 }
+

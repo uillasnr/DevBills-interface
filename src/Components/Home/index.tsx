@@ -60,9 +60,9 @@ export function Home() {
           </Filters>
 
           <Balance>
-            <Card title="saldo" amount={100000} />
-            <Card title="saldo" amount={100000} variant="incomes" />
-            <Card title="saldo" amount={100000} variant="expenses" />
+            <Card title="Saldo" amount={100000} />
+            <Card title="Receitas" amount={100000} variant="incomes" />
+            <Card title="Gastos" amount={100000} variant="expenses" />
           </Balance>
 
           <ChartContainer>
@@ -108,11 +108,11 @@ export function Home() {
           </header>
           <TransactionGroup>
             <Transaction
-              id={1}
+            /*   id={1}
               amount={2000}
               date="09/10/2023"
               category={{ title: 'Alimentação', color: '#fff' }}
-              title="Mercado"
+              title="Mercado" */
             />
           </TransactionGroup>
         </Aside>

@@ -7,6 +7,7 @@ export const Header = styled.header`
   justify-content: space-between;
   padding: 1.5rem;
   width: 100%;
+  
 
   div {
     display: flex;
@@ -20,6 +21,10 @@ export const Main = styled.main`
   gap: 0.75rem;
   width: 100%;
   padding: 0 1.5rem 1.5rem 1.5rem;
+
+  @media (max-width: 768px) {
+    display: grid;
+  }
 `;
 
 export const Section = styled.section`
@@ -57,7 +62,8 @@ export const ChartContainer = styled.div`
   flex-direction: column;
   padding: 1rem;
   background-color: ${color.colors.dark};
-  border-radius: 0%.25rem;
+  box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 0.50rem;
 
   header {
     display: flex;
@@ -83,7 +89,8 @@ export const Aside = styled.aside`
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
-  border-radius: 0.25rem;
+  box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 0.50rem;
   background-color: ${color.colors.dark};
 
   header {
@@ -91,6 +98,7 @@ export const Aside = styled.aside`
     flex-direction: column;
     gap: 1rem;
   }
+ 
 `;
 
 export const SearchTransaction = styled.div`

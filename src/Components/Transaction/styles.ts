@@ -17,6 +17,7 @@ export const Container = styled.div`
   justify-content: space-between;
   position: relative;
   padding: 0.75rem;
+  flex-direction: column;
   /*  border: 1px solid red; */
 
   span {
@@ -35,6 +36,13 @@ export const Container = styled.div`
     width: 10px;
     background-color: ${color.colors.neutral};
   }
+`;
+export const ContainerItem = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  margin: 10px 0px;
+  gap: 4.5rem;
 `;
 
 export const Info = styled.div`
@@ -65,7 +73,7 @@ export const Info = styled.div`
 export const Content = styled.div<ContentType>`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: end;
   gap: 0.25rem;
 
   strong {
