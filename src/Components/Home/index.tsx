@@ -60,7 +60,7 @@ export function Home() {
           </Filters>
 
           <Balance>
-            <Card title="Saldo" amount={100000} />
+            <Card title="Saldo" amount={200000} />
             <Card title="Receitas" amount={100000} variant="incomes" />
             <Card title="Gastos" amount={100000} variant="expenses" />
           </Balance>
