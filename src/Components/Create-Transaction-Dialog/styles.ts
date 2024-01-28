@@ -25,6 +25,12 @@ export const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+
+  span{
+    color: ${color.colors.error};
+    font-size: 0.625rem;
+    padding-left: 0.5rem;
+  }
 `;
 
 export const InputGroup = styled.div`
