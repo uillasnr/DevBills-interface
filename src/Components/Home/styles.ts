@@ -83,6 +83,18 @@ export const ChartAction = styled.div`
   gap: 0.5rem;
 `;
 
+export const AsideContainer = styled.aside`
+ display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+
+  .AsideButton{
+    display: flex;
+    gap: 0.5rem;
+  }
+`
+
 export const Aside = styled.aside`
   min-width: 22.5rem;
   display: flex;

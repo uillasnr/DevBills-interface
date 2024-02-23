@@ -14,6 +14,7 @@ import {
   Aside,
   SearchTransaction,
   TransactionGroup,
+  AsideContainer
 } from './styles';
 import { ButtonIcon } from '../Button-icon';
 import { Card } from '../Card';
@@ -28,10 +29,11 @@ export function Home() {
     <>
       <Header>
         <h1 style={{ color: '#fff' }}>DevBill$</h1>
-        <div>
+        {/*  <div>
           <CreateTransactionDialog />
           <CreateCategoryDialog />
-        </div>
+        </div> */}
+        <div>uillas</div>
       </Header>
 
       <Main>
@@ -60,9 +62,9 @@ export function Home() {
           </Filters>
 
           <Balance>
-            <Card title="Saldo" amount={200000} />
-            <Card title="Receitas" amount={100000} variant="incomes" />
-            <Card title="Gastos" amount={100000} variant="expenses" />
+            <Card title="Saldo" variant="balance" />
+            <Card title="Receitas" variant="incomes" />
+            <Card title="Gastos" variant="expenses" />
           </Balance>
 
           <ChartContainer>
@@ -97,25 +99,34 @@ export function Home() {
             </ChartContent>
           </ChartContainer>
         </Section>
-
-        <Aside>
-          <header>
-            <Title title="Transações" subtitle="Receitas e Gastos no periodo" />
-            <SearchTransaction>
-              <Input placeholder="Procurar transação..." variant="black" />
-              <ButtonIcon />
-            </SearchTransaction>
-          </header>
-          <TransactionGroup>
-            <Transaction
-            /*   id={1}
+        
+        <AsideContainer>
+          <div className='AsideButton' >
+            <CreateTransactionDialog />
+            <CreateCategoryDialog />
+          </div>
+          <Aside>
+            <header>
+              <Title
+                title="Transações"
+                subtitle="Receitas e Gastos no periodo"
+              />
+              <SearchTransaction>
+                <Input placeholder="Procurar transação..." variant="black" />
+                <ButtonIcon />
+              </SearchTransaction>
+            </header>
+            <TransactionGroup>
+              <Transaction
+              /*   id={1}
               amount={2000}
               date="09/10/2023"
               category={{ title: 'Alimentação', color: '#fff' }}
               title="Mercado" */
-            />
-          </TransactionGroup>
-        </Aside>
+              />
+            </TransactionGroup>
+          </Aside>
+        </AsideContainer>
       </Main>
     </>
   );
