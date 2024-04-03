@@ -1,9 +1,8 @@
-export const formatDate = (dateNumber: string) => {
-  const dateObject = new Date(dateNumber);
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-  const day = dateObject.getDate().toString().padStart(2, '0');
-  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
-  const year = dateObject.getFullYear().toString().slice(-4);
+dayjs.extend(customParseFormat);
 
-  return `${day}/${month}/${year}`;
-};
+export function formatDate(date: string): string {
+  return dayjs(date, 'DD/MM/YYYY').format('YYYY-MM-DD');
+}
