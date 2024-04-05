@@ -1,13 +1,16 @@
 import { styled } from 'styled-components';
 import { color } from '../../Styles/color';
 
+type CategoryBadgePros = {
+  $color: string;
+};
+
 export const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
   width: 100%;
-  
 
   div {
     display: flex;
@@ -63,7 +66,7 @@ export const ChartContainer = styled.div`
   padding: 1rem;
   background-color: ${color.colors.dark};
   box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.25);
-  border-radius: 0.50rem;
+  border-radius: 0.5rem;
 
   header {
     display: flex;
@@ -84,16 +87,16 @@ export const ChartAction = styled.div`
 `;
 
 export const AsideContainer = styled.aside`
- display: flex;
+  display: flex;
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
 
-  .AsideButton{
+  .AsideButton {
     display: flex;
     gap: 0.5rem;
   }
-`
+`;
 
 export const Aside = styled.aside`
   min-width: 22.5rem;
@@ -102,7 +105,7 @@ export const Aside = styled.aside`
   gap: 0.75rem;
   padding: 1rem;
   box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.25);
-  border-radius: 0.50rem;
+  border-radius: 0.5rem;
   background-color: ${color.colors.dark};
 
   header {
@@ -110,7 +113,6 @@ export const Aside = styled.aside`
     flex-direction: column;
     gap: 1rem;
   }
- 
 `;
 
 export const SearchTransaction = styled.div`
@@ -121,6 +123,54 @@ export const SearchTransaction = styled.div`
 
 export const TransactionGroup = styled.div`
   display: flex;
- flex-direction: column;
- padding: 0 0 0.75;
+  flex-direction: column;
+  padding: 0 0 0.75;
+  overflow: auto;
+  height: 38rem;
+
+  /* Estilizando a barra de rolagem */
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${color.colors.black};
+    border-radius: 1rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${color.colors.primaryDark};
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: ${color.colors.neutral};
+    font-weight: 400;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    margin-top: 18rem;
+  }
+`;
+
+export const CategoryBadge = styled.span<CategoryBadgePros>`
+  display: flex;
+  font-size: row;
+  align-items: center;
+  gap: 0.25rem;
+
+  font-size: 0.625rem;
+  font-weight: 400;
+  border: 1px solid ${(props) => props.$color};
+  color: ${(props) => props.$color};
+  padding: 0.25rem;
+  border-radius: 0.125rem;
+  cursor: pointer;
+
+  svg {
+    fill: ${color.colors.error};
+    width: 0.875rem;
+    height: 0.875rem;
+  }
 `;
