@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { Dialog } from '../Dialog';
 import { Container, Content, ColorButton } from './styles';
 import { Input } from '../Input';
 
 type OnSelectColorType = (color: string) => void;
 
-export function ColorCategory({onSelectColor,}: { onSelectColor: OnSelectColorType; }) {
+export const ColorCategory = forwardRef<HTMLDivElement, { onSelectColor: OnSelectColorType }>(({ onSelectColor }, ref) => {
   const [open, setOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState('');
 
@@ -26,7 +26,7 @@ export function ColorCategory({onSelectColor,}: { onSelectColor: OnSelectColorTy
     '#9400D3',
     '#FF1493',
     '#FFA500',
-    '#008000',
+    '#00ED64',
     '#ADD8E6',
   ];
 
@@ -45,10 +45,11 @@ export function ColorCategory({onSelectColor,}: { onSelectColor: OnSelectColorTy
       trigger={
         <Input
           id="categoryColor"
-          label="Cor"
-          style={{ padding: '10px', backgroundColor: selectedColor }}
+         /*  label="Cor" */
+          style={{  backgroundColor: selectedColor }}
           onClick={() => setOpen(true)}
           placeholder={placeholderText}
+          ref={ref as React.RefObject<HTMLInputElement>} // Ajuste o tipo aqui para corresponder à expectativa de HTMLInputElement
         />
       }
     >
@@ -66,4 +67,5 @@ export function ColorCategory({onSelectColor,}: { onSelectColor: OnSelectColorTy
       </Container>
     </Dialog>
   );
-}
+});
+

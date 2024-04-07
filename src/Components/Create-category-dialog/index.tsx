@@ -3,58 +3,54 @@ import { Button } from '../Button';
 import { Dialog } from '../Dialog';
 import { Title } from '../Title';
 import { Input } from '../Input';
-import { Container } from './styles';
-import { api } from '../../services/Api';
-import { Select } from '../Select';
+import { Container, Content } from './styles';
 
-type CategoryProps = {
-  id: number;
-  title: string;
-  Icon: string;
-  color: string;
-};
+import { Select } from '../Select';
+import { useFetchAPI } from '../../hooks/useFetchApi';
+
+import { useForm } from 'react-hook-form';
+import { createCategorySchema } from '../../Validators/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CeateCategoryData } from '../../Validators/types';
+
+import { ColorCategory } from '../Color-Category';
 
 export function CreateCategoryDialog() {
+  const { createCategory, fetchCategories } = useFetchAPI();
   const [open, setOpen] = useState(false);
-  const [NewCategory, setNewCategory] = useState<CategoryProps[]>([]);
   const [selectedIcon, setSelectedIcon] = useState<string>('');
-  console.log("teste",selectedIcon);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<CeateCategoryData>({
+    defaultValues: {
+      title: '',
+      color: '',
+      Icon: '',
+    },
+    /*  resolver: zodResolver(createCategorySchema),  */
+  });
+
   const handleClose = useCallback(() => {
     setOpen(false);
   }, []);
 
-  const onSubmit = useCallback(async () => {
-    try {
-      // Obtém os valores dos inputs (você pode ajustar conforme necessário)
-      const title = (
-        document.getElementById('categoryName') as HTMLInputElement
-      )?.value;
-      const color = (
-        document.getElementById('categoryColor') as HTMLInputElement
-      )?.value;
-  
-      // Validação simples (você pode ajustar conforme necessário)
-      if (!title || !color || !selectedIcon) {
-        console.error('Por favor, preencha todos os campos.');
-        return;
-      }
-  
-      // Envia os dados para a API
-      const response = await api.post('/categories', {
-        title,
-        color,
-        Icon: selectedIcon, // Use o valor selecionado do estado
-      });
-  
-      // Se a API retorna os dados da nova categoria, você pode atualizar o estado
-      setNewCategory(response.data);
-  
-      // Fecha o diálogo
+  const onSubmit = useCallback(
+    async (data: CeateCategoryData) => {
+      const categoryData = {
+        title: data.title,
+        color: data.color,
+        Icon: selectedIcon,
+      };
+
+      await createCategory(categoryData);
       handleClose();
-    } catch (error) {
-      console.error('Erro ao cadastrar nova categoria:', error);
-    }
-  }, [handleClose, selectedIcon]);
+      await fetchCategories();
+    },
+    [handleClose, createCategory, fetchCategories, selectedIcon],
+  );
 
   return (
     <Dialog
@@ -68,24 +64,35 @@ export function CreateCategoryDialog() {
           subtitle="Crie uma categoria para suas transações"
         />
 
-        <form>
-          <div>
-            <Input
-              id="categoryName"
-              label="Nome"
-              placeholder="Nome da categoria..."
-            />
-            <Input id="categoryColor" label="Cor" type="color" />
-          </div>
-          <Select  onSelectIcon={setSelectedIcon} />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Content>
+            <div>
+              <Input
+                id="categoryName"
+                label="Nome"
+                placeholder="Nome da categoria..."
+                {...register('title')}
+              />
+              {errors.title && <p>{errors.title.message}</p>}
+            </div>
+
+            <div>
+              <label>Cor</label>
+              <ColorCategory
+                {...register('color')}
+                onSelectColor={(color) => setValue('color', color)}
+              />
+              {errors.color && <p>{errors.color.message}</p>}
+            </div>
+          </Content>
+
+          <Select onSelectIcon={setSelectedIcon} />
 
           <footer>
             <Button onClick={handleClose} variant="outline" type="button">
               Cancelar
             </Button>
-            <Button onClick={onSubmit} type="button">
-              Cadastrar
-            </Button>
+            <Button type="submit">Cadastrar</Button>
           </footer>
         </form>
       </Container>

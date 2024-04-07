@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { color } from '../../Styles/color';
 
 export const Container = styled.div`
   display: flex;
@@ -11,10 +12,10 @@ export const Container = styled.div`
     gap: 1rem;
   }
 
-  div {
-    display: flex;
-    grid-template-columns: 80% auto;
-    grid-gap: 0.5rem;
+  p {
+    color: ${color.colors.error};
+    font-size: 0.625rem;
+    padding-left: 0.5rem;
   }
 
   footer {
@@ -24,3 +25,22 @@ export const Container = styled.div`
     gap: 0.75rem;
   }
 `;
+
+export const Content = styled.div`
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+
+  label{
+    color: ${color.colors.light};
+    font-size: 0.625rem;
+  }
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+`;
+
+
