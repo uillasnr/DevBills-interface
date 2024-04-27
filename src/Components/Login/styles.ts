@@ -27,6 +27,41 @@ export const Overlay = styled(AlertDialog.Overlay)`
   }
 `;
 
+export const Conatiner = styled.div`
+ display: flex; 
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center; 
+  text-align: center; 
+
+  img {
+    width: 70%;
+    height: auto;
+    margin-bottom: 2rem; 
+  }
+
+  h3 {
+    font-size: 0.875rem;
+    color: ${color.colors.light};
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    img {
+      width: 50%;
+      order: -1;
+    }
+  }
+
+`;
+
+export const Text = styled.h2` 
+  font-size: 1.5rem; 
+  color: ${color.colors.white}; 
+  
+`;
+
 export const Content = styled(AlertDialog.Content)`
   background-color: ${color.colors.dark};
   border-radius: 0.5rem;
@@ -43,10 +78,7 @@ export const Content = styled(AlertDialog.Content)`
   flex-direction: row;
   gap: 1.5rem;
 
-  img {
-    width: 50%;
-    height: auto;
-  }
+ 
 
   h1 {
     font-size: 1.8rem;
@@ -78,6 +110,12 @@ export const Content = styled(AlertDialog.Content)`
   }
 
   span {
+    color: ${color.colors.error};
+    font-size: 0.625rem;
+  }
+
+  p {
+    text-align: center;
     color: ${color.colors.error};
     font-size: 0.625rem;
   }
