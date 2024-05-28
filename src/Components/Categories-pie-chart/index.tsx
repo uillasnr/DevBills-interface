@@ -2,39 +2,13 @@ import { ResponsivePie } from '@nivo/pie';
 import { useMemo } from 'react';
 import { color } from '../../Styles/color';
 import { formatCurrency } from '../../utils/format-currency';
+import { Expense } from '../../services/Api-types';
 
-const apiData = [
-  {
-    _id: '1',
-    title: 'Alimentação',
-    amont: 30000,
-    color: 'red',
-  },
-  {
-    _id: '2',
-    title: 'Compras',
-    amont: 20000,
-    color: '#FF0000',
-  },
-  {
-    _id: '3',
-    title: 'garagem',
-    amont: 50000,
-    color: '#ff33bb',
-  },
-  {
-    _id: '4',
-    title: 'Gasolina',
-    amont: 90000,
-    color: 'blue',
-  },
-  {
-    _id: '5',
-    title: 'celular',
-    amont: 90000,
-    color: '#3aff33',
-  },
-];
+export type CategoryProps = {
+  id: string;
+  title: string;
+  color: string;
+};
 
 type ChartData = {
   id: string;
@@ -44,20 +18,59 @@ type ChartData = {
   color: string;
 };
 
-export function CategoriesPieChart() {
+type CategoriesPieChartProps = {
+  onClick: (category: CategoryProps) => void;
+  expenses?: Expense[];
+};
+
+export function CategoriesPieChart({
+  onClick,
+  expenses,
+}: CategoriesPieChartProps) {
+  const customColors = useMemo(() => {
+    if (expenses?.length) {
+      return expenses.map((item) => item.color);
+    }
+    return ['#C1C7C6'];
+  }, [expenses]);
+
   const data = useMemo<ChartData[]>(() => {
-    const chartData: ChartData[] = apiData.map((item) => ({
-      id: item.title,
-      label: item.title,
-      externalId: item._id,
-      value: item.amont,
-      color: item.color,
-    }));
-    return chartData;
-  }, []);
+    if (expenses?.length) {
+      return expenses.map((item) => ({
+        id: item.title,
+        label: item.title,
+        externalId: item._id,
+        value: item.amount,
+        color: item.color,
+      }));
+    }
+    return [
+      {
+        id: 'Adicione Despesas',
+        label: 'Adicione Despesas',
+        externalId: '1',
+        value: 1,
+        color: '#b90000',
+      },
+      {
+        id: 'Sem Despesa ',
+        label: 'Sem Despesas',
+        externalId: '2',
+        value: 3,
+        color: '#454547',
+      },
+    ];
+  }, [expenses]);
 
   return (
     <ResponsivePie
+      onClick={({ data }) =>
+        onClick({
+          id: data.externalId,
+          title: data.id,
+          color: data.color,
+        })
+      }
       data={data}
       margin={{ top: 24, right: 10, bottom: 24, left: -35 }}
       valueFormat={formatCurrency}
@@ -65,13 +78,12 @@ export function CategoriesPieChart() {
       padAngle={2}
       cornerRadius={6}
       borderWidth={1}
-      activeOuterRadiusOffset = { 3 }
-      colors={{ scheme: 'category10' }}
+      activeOuterRadiusOffset={3}
+      colors={customColors}
       borderColor={{
         from: 'color',
         modifiers: [['darker', 0.2]],
       }}
-      
       theme={{
         text: {
           fontSize: 12,
@@ -104,9 +116,9 @@ export function CategoriesPieChart() {
           translateX: 0,
           translateY: 0,
           itemsSpacing: 0,
-          itemWidth: 100,
+          itemWidth: 120,
           itemHeight: 30,
-          itemTextColor: '#fff',
+          itemTextColor: '#C1C7C6',
           itemDirection: 'left-to-right',
           itemOpacity: 1,
           symbolSize: 15,
@@ -115,7 +127,7 @@ export function CategoriesPieChart() {
             {
               on: 'hover',
               style: {
-                itemTextColor: '#999',
+                itemTextColor: '#fff',
               },
             },
           ],
