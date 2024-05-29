@@ -1,11 +1,13 @@
-import { Home } from './Components/Home';
+import { AppProvider } from './hooks';
 import GlobalStyles from './Styles/global';
+
+import Router from './routes/route';
 
 export function App() {
   return (
-    <>
+    <AppProvider>
       <GlobalStyles />
-      <Home />
-    </>
+      <Router />
+    </AppProvider>
   );
 }
