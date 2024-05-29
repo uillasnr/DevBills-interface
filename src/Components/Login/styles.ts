@@ -1,18 +1,18 @@
 import { styled } from 'styled-components';
-import * as AlertDialog from '@radix-ui/react-alert-dialog';
+
 import { color } from '../../Styles/color';
 
-export const Root = styled(AlertDialog.Root)``;
+export const Root = styled.div``;
 
-export const Portal = styled(AlertDialog.Portal)``;
+export const Portal = styled.div``;
 
-export const Trigger = styled(AlertDialog.Trigger)`
+export const Trigger = styled.div`
   border: 0;
   background-color: transparent;
 `;
 
-export const Overlay = styled(AlertDialog.Overlay)`
-  background-color: rgba(0, 0, 0, 0.98);
+export const Overlay = styled.div`
+  background-color:#2b2b2b;
   position: fixed;
   inset: 0;
   animation: overlayShow 150ms;
@@ -28,16 +28,17 @@ export const Overlay = styled(AlertDialog.Overlay)`
 `;
 
 export const Conatiner = styled.div`
- display: flex; 
+  display: flex;
   flex-direction: column;
-  align-items: center; 
-  justify-content: center; 
-  text-align: center; 
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
 
   img {
     width: 70%;
     height: auto;
-    margin-bottom: 2rem; 
+    margin-bottom: 2rem;
   }
 
   h3 {
@@ -53,16 +54,14 @@ export const Conatiner = styled.div`
       order: -1;
     }
   }
-
 `;
 
-export const Text = styled.h2` 
-  font-size: 1.5rem; 
-  color: ${color.colors.white}; 
-  
+export const Text = styled.h2`
+  font-size: 1.5rem;
+  color: ${color.colors.white};
 `;
 
-export const Content = styled(AlertDialog.Content)`
+export const Content = styled.div`
   background-color: ${color.colors.dark};
   border-radius: 0.5rem;
   position: fixed;
@@ -73,12 +72,10 @@ export const Content = styled(AlertDialog.Content)`
   max-width: 60rem;
   padding: 1rem;
   align-items: center;
-
+  box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
-
- 
 
   h1 {
     font-size: 1.8rem;
@@ -95,9 +92,6 @@ export const Content = styled(AlertDialog.Content)`
     width: 100%;
     max-width: 400px;
     margin-top: 1rem;
-  }
-  div {
-    margin-bottom: 0.5rem;
   }
 
   footer {
@@ -136,12 +130,11 @@ export const Content = styled(AlertDialog.Content)`
 
     img {
       width: 50%;
-      order: -1; 
+      order: -1;
     }
 
     form {
       max-width: none;
     }
   }
-
 `;

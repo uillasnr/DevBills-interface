@@ -1,27 +1,20 @@
-import {
-  Content,
-  Overlay,
-  Portal,
-  Root,
-  Trigger,
-  Conatiner,
-  Text,
-} from './styles';
+import { Content, Overlay, Portal, Root, Conatiner, Text } from './styles';
 import { Input } from '../Input';
 import { Button } from '../Button';
 import Imagem from '../../assets/png.png';
-import { Headerr } from '../Header';
-import { Cadastrar } from '../Cadastrar';
+
 import { useForm } from 'react-hook-form';
 import { UserData } from '../../Validators/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { userSchema } from '../../Validators/schemas';
 import { useFetchAPI } from '../../hooks/useFetchApi';
 import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function Login() {
-  const { user } = useFetchAPI();
-  const [Open, setOpen] = useState(true);
+  const { login } = useFetchAPI();
+  const navigate = useNavigate();
+
   const [error, setError] = useState<string | null>(null);
   const {
     register,
@@ -31,32 +24,26 @@ export function Login() {
     resolver: zodResolver(userSchema),
   });
 
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const handleCadastrarClick = () => {
+    navigate('/cadastro');
+  };
 
   const onSubmit = useCallback(
     async (data: UserData) => {
       try {
-        console.log('teste login', data);
-        await user(data);
-        handleClose();
+        await login(data);
+        navigate('/Home');
       } catch (error) {
         setError(
           'Credenciais inválidas. Por favor, verifique seu email e senha.',
         );
       }
     },
-    [handleClose, user],
+    [login, navigate],
   );
 
   return (
-    <Root open={Open} onOpenChange={setOpen}>
-      <Trigger asChild>
-        <button className="Button violet">
-          <Headerr />
-        </button>
-      </Trigger>
+    <Root>
       <Portal>
         <Overlay className="AlertDialogOverlay" />
         <Content>
@@ -70,7 +57,7 @@ export function Login() {
             <h1>Login</h1>
             {error && <p>{error}</p>}
             <div>
-              <Input label="Email"  {...register('email')} />
+              <Input label="Email" {...register('email')} />
               {errors.email && <span>{errors.email.message}</span>}
             </div>
 
@@ -80,9 +67,15 @@ export function Login() {
             </div>
 
             <footer>
-              <Trigger asChild>
-                <Cadastrar />
-              </Trigger>
+              <Button
+                style={{ border: '1px solid #292a2d', borderRadius: '0.25rem' }}
+                onClick={handleCadastrarClick}
+                variant="outline"
+                type="button"
+              >
+                Cadastrar
+              </Button>
+
               <Button type="submit">Entrar</Button>
             </footer>
           </form>
