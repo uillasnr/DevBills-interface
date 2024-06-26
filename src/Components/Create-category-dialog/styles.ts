@@ -24,6 +24,7 @@ export const Container = styled.div`
     justify-content: flex-end;
     gap: 0.75rem;
   }
+
 `;
 
 export const Content = styled.div`
@@ -31,7 +32,7 @@ export const Content = styled.div`
   width: 100%;
   gap: 0.5rem;
 
-  label{
+  label {
     color: ${color.colors.light};
     font-size: 0.625rem;
   }
@@ -42,5 +43,3 @@ export const Content = styled.div`
     width: 100%;
   }
 `;
-
-

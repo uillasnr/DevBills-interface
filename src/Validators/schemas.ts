@@ -1,17 +1,50 @@
 import { z } from 'zod';
 
+export const userSchema = z.object({
+  email: z.string().min(1, {
+    message: 'O Email de usuário deve conter pelo menos 1 caractere.',
+  }),
+  password: z
+    .string()
+    .min(6, { message: 'A senha deve conter pelo menos 6 caracteres.' }),
+});
+
+export const createUserSchema = z.object({
+    name: z.string().min(1, {
+      message: 'O nome de usuário deve conter pelo menos 1 caractere.',
+    }),
+    email: z
+      .string()
+      .email({
+        message: 'Formato de email inválido.',
+      })
+      .min(1, {
+        message: 'O Email de usuário deve conter pelo menos 1 caractere.',
+      }),
+    password: z
+      .string()
+      .min(6, { message: 'A senha deve conter pelo menos 6 caracteres.' }),
+    confirmPassword: z
+      .string()
+      .min(6, { message: 'A senha deve conter pelo menos 6 caracteres.' }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'As senhas não coincidem.',
+    path: ['confirmPassword'],
+  });
+
 export const createCategorySchema = z.object({
+  //userId: z.string().optional(), 
   title: z
     .string()
     .min(1, { message: 'Deve conter pelo menos 1 caractere.' })
     .max(255),
-  color: z
-    .string()
-    .regex(/^#[A-Fa-f0-9]{6}$/, { message: 'Deve seguir o padrão #rrggbb' }),
-  Icon: z.string().min(1, { message: 'Adicione um Ícone' }).max(255),
+  color: z.string().min(1, { message: 'Deve seguir o padrão #rrggbb' }),
+ // Icon: z.string().min(1, { message: 'Adicione um Ícone' }).max(255),
 });
 
 export const createTransactionSchema = z.object({
+  userId: z.string().optional(),
   categoryId: z.string().min(1, { message: 'Escolha uma categoria válida' }),
   title: z
     .string()
@@ -29,9 +62,11 @@ export const createTransactionSchema = z.object({
   type: z.enum(['income', 'expense'], {
     errorMap: () => ({ message: 'Selecione um tipo válido' }),
   }),
+  observation: z.string().optional(),
 });
 
 export const TransactionsFilterSchema = z.object({
+  userId: z.string().optional(),
   title: z.string().optional(),
   categoryId: z.string().optional(),
   beginDate: z

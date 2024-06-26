@@ -16,7 +16,7 @@ import { CeateCategoryData } from '../../Validators/types';
 import { ColorCategory } from '../Color-Category';
 
 export function CreateCategoryDialog() {
-  const { createCategory, fetchCategories } = useFetchAPI();
+  const { createCategory, fetchCategories, userData } = useFetchAPI();
   const [open, setOpen] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string>('');
   const {
@@ -25,12 +25,11 @@ export function CreateCategoryDialog() {
     setValue,
     formState: { errors },
   } = useForm<CeateCategoryData>({
-    defaultValues: {
+     defaultValues: {
       title: '',
       color: '',
-      Icon: '',
-    },
-    /*  resolver: zodResolver(createCategorySchema),  */
+    }, 
+     resolver: zodResolver(createCategorySchema),
   });
 
   const handleClose = useCallback(() => {
@@ -39,18 +38,24 @@ export function CreateCategoryDialog() {
 
   const onSubmit = useCallback(
     async (data: CeateCategoryData) => {
+      if (!userData) {
+        console.error('User data is missing. Cannot create category.');
+        return;
+      }
       const categoryData = {
         title: data.title,
         color: data.color,
         Icon: selectedIcon,
       };
 
+      console.log('Category Data:', categoryData);
       await createCategory(categoryData);
       handleClose();
       await fetchCategories();
     },
-    [handleClose, createCategory, fetchCategories, selectedIcon],
+    [handleClose, createCategory, fetchCategories, selectedIcon, userData],
   );
+
 
   return (
     <Dialog
@@ -87,12 +92,16 @@ export function CreateCategoryDialog() {
           </Content>
 
           <Select onSelectIcon={setSelectedIcon} />
+ 
 
           <footer>
             <Button onClick={handleClose} variant="outline" type="button">
               Cancelar
             </Button>
-            <Button type="submit">Cadastrar</Button>
+
+            <Button type="submit" >
+              Cadastrar
+            </Button>
           </footer>
         </form>
       </Container>
