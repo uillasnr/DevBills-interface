@@ -13,67 +13,42 @@ import {
   RadioGroup,
 } from './styles';
 import { InputMask } from '@react-input/mask';
-import { api } from '../../services/Api';
 
-type Category = {
-  _id: number;
-  title: string;
-  color: string;
-};
+import { CreateTransactionData } from '../../Validators/types';
+import { createTransactionSchema } from '../../Validators/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useFetchAPI } from '../../hooks/useFetchApi';
 
 export function CreateTransactionDialog() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { categories, fetchCategories, createTransaction } = useFetchAPI();
   const [open, setOpen] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
-
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, []);
-
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-  
-      const amount = parseFloat(data.amount.replace(/\D/g, '')); // Remover caracteres não numéricos
-
-      // Formatando a data formato YYYY-MM-DD
-      const dateParts = data.date.split('/');
-      const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-
-      await api.post('/transactions', {
-        title: data.title,
-        amount: amount,
-        categoryId: data.category,
-        date: formattedDate,
-        type: data.type,
-      });
-      handleClose();
-
-      reset();
-    } catch (error) {
-      console.error('Error creating transaction:', error);
-    }
-
-    handleClose();
+  } = useForm<CreateTransactionData>({
+    resolver: zodResolver(createTransactionSchema),
   });
 
+  const handleClose = useCallback(() => {
+    reset();
+    setOpen(false);
+  }, [reset]);
+
+  const onSubmit = useCallback(
+    async (data: CreateTransactionData) => {
+      await createTransaction(data);
+      await fetchCategories();
+      handleClose();
+    },
+    [handleClose, createTransaction, fetchCategories],
+  );
+
+  //Renderiza as categorias
   useEffect(() => {
-    async function loadCategories() {
-      try {
-        const { data } = await api.get('/categories');
-        setCategories(data); 
-
-      } catch (error) {
-        console.error('Error loading transactions:', error);
-      }
-    }
-
-    loadCategories();
-  }, []);
+    fetchCategories();
+  }, [fetchCategories]);
 
   return (
     <Dialog
@@ -87,11 +62,11 @@ export function CreateTransactionDialog() {
           subtitle="Crie uma transação para seu controle financeiro"
         />
 
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Content>
             <InputGroup>
               <label>Categoria</label>
-              <select {...register('category', { required: true })}>
+              <select {...register('categoryId')}>
                 <option value="">Selecione uma categoria...</option>
                 {categories.map((category) => (
                   <option key={category._id} value={category._id}>
@@ -99,15 +74,21 @@ export function CreateTransactionDialog() {
                   </option>
                 ))}
               </select>
-              {errors.category && <span>Campo obrigatório</span>}
+              {errors.categoryId && <span>{errors.categoryId.message}</span>}
             </InputGroup>
 
             <Input
               label="Nome"
               placeholder="Nome da transação..."
-              {...register('title', { required: true })}
+              {...register('title')}
             />
-            {errors.title && <span>Campo obrigatório</span>}
+            {errors.title && <span>{errors.title?.message}</span>}
+
+            <Input
+              label="Observação"
+              placeholder="Adicionar observação..."
+              {...register('observation')}
+            />
 
             <InputGroup>
               <label>Valor</label>
@@ -115,9 +96,9 @@ export function CreateTransactionDialog() {
                 placeholder="R$ 0,00"
                 format="currency"
                 currency="BRL"
-                {...register('amount', { required: true })}
+                {...register('amount')}
               />
-              {errors.value && <span>Campo obrigatório</span>}
+              {errors.amount && <span>{errors.amount.message}</span>}
             </InputGroup>
 
             <InputMask
@@ -127,9 +108,9 @@ export function CreateTransactionDialog() {
               placeholder="dd/mm/aaaa"
               variant="black"
               label="Data"
-              {...register('date', { required: true })}
+              {...register('date')}
             />
-            {errors.date && <span>Campo obrigatório</span>}
+            {errors.date && <span>{errors.date.message}</span>}
 
             <RadioForm>
               <RadioGroup>
@@ -137,19 +118,21 @@ export function CreateTransactionDialog() {
                   type="radio"
                   id="income"
                   value="income"
-                  /* name="type" */ {...register('type')}
+                  {...register('type')}
                 />
                 <label htmlFor="income">Receita</label>
               </RadioGroup>
+
               <RadioGroup>
                 <input
                   type="radio"
                   id="expense"
                   value="expense"
-                  /* name="type" */ {...register('type')}
+                  {...register('type')}
                 />
                 <label htmlFor="expense">Gasto</label>
               </RadioGroup>
+              {errors.type && <span>{errors.type.message}</span>}
             </RadioForm>
 
             <footer>
