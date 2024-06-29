@@ -1,84 +1,12 @@
+import { useMemo, useState } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
-import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import ptBRLocal from 'dayjs/locale/pt-br';
 import { color } from '../../Styles/color';
 import { formatCurrency } from '../../utils/format-currency';
+import { FinancialEvolution } from '../../services/Api-types';
 
-const apiData = [
-  {
-    _id: {
-      year: 2023,
-      month: 1,
-    },
-    balance: 68900,
-    incomes: 76343,
-    expenses: 118399,
-  },
-  {
-    _id: {
-      year: 2023,
-      month: 2,
-    },
-    balance: 82000,
-    incomes: 90443,
-    expenses: 80099,
-  },
-  {
-    _id: {
-      year: 2023,
-      month: 3,
-    },
-    balance: 152000,
-    incomes: 40443,
-    expenses: 90099,
-  },
-  {
-    _id: {
-      year: 2023,
-      month: 4,
-    },
-    balance: 12000,
-    incomes: 20443,
-    expenses: 10099,
-  },
-  {
-    _id: {
-      year: 2023,
-      month: 5,
-    },
-    balance: 68900,
-    incomes: 76343,
-    expenses: 48399,
-  },
-  {
-    _id: {
-      year: 2023,
-      month: 6,
-    },
-    balance: 82000,
-    incomes: 190443,
-    expenses: 80099,
-  },
-  {
-    _id: {
-      year: 2023,
-      month: 7,
-    },
-    balance: 52000,
-    incomes: 40443,
-    expenses: 90099,
-  },
-  {
-    _id: {
-      year: 2023,
-      month: 8,
-    },
-    balance: 12000,
-    incomes: 20443,
-    expenses: 10099,
-  },
-];
+dayjs.locale(ptBRLocal);
 
 type ChartData = {
   month: string;
@@ -87,16 +15,57 @@ type ChartData = {
   Gastos: number;
 };
 
-export function FinancialEvolutionBarChart() {
-  const data = useMemo<ChartData[]>(() => {
-    const chartData: ChartData[] = apiData.map((item) => ({
-      month: dayjs(`${item._id.year}-${item._id.month}-01`).format('MMM'),
-      saldo: item.balance,
-      Receitas: item.incomes,
-      Gastos: item.expenses,
-    }));
-    return chartData;
+type FinancialEvolutionBarChartProps = {
+  financialEvolution?: FinancialEvolution[];
+};
+
+export function FinancialEvolutionBarChart({ financialEvolution }: FinancialEvolutionBarChartProps) {
+  const [isFictitious, setIsFictitious] = useState(false);
+
+  const allMonths = useMemo(() => {
+    return Array.from({ length: 12 }, (_, index) => dayjs().month(index).format('MMM'));
   }, []);
+
+  const data = useMemo<ChartData[]>(() => {
+    if (financialEvolution?.length) {
+      setIsFictitious(false);
+
+      const chartData: ChartData[] = allMonths.map(month => {
+        const foundData = financialEvolution.find(item => dayjs(`${item._id[0]}-${item._id[1]}-01`).format('MMM') === month);
+
+        if (foundData) {
+          return {
+            month,
+            saldo: foundData.balance,
+            Receitas: foundData.incomes,
+            Gastos: foundData.expenses,
+          };
+        } else {
+          return {
+            month,
+            saldo: 0,
+            Receitas: 0,
+            Gastos: 0,
+          };
+        }
+      });
+
+      return chartData;
+    }
+
+    // Dados fictícios
+    setIsFictitious(true);
+    return allMonths.map(month => ({
+      month,
+      saldo: 0.5,
+      Receitas: 1,
+      Gastos: 2,
+    }));
+  }, [financialEvolution, allMonths]);
+
+  const colors = isFictitious
+    ? ['#C1C7C6', '#C1C7C6', '#C1C7C6'] 
+    : [color.colors.info, color.colors.success, color.colors.error]; 
 
   return (
     <ResponsiveBar
@@ -114,8 +83,7 @@ export function FinancialEvolutionBarChart() {
         tickSize: 0,
         format: formatCurrency,
       }}
-      /*  colors={{ scheme: 'category10' }} */
-      colors={[color.colors.info, color.colors.primary, color.colors.error]}
+      colors={colors}
       theme={{
         text: {
           fontFamily: 'Lexend',
