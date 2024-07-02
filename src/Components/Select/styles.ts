@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 
 export const InputSelect = styled.div`
-
+display: inline-flex;
   width: 100%;
   
 
@@ -26,7 +26,7 @@ export const InputSelect = styled.div`
     width: 50%;
     height: 50%;
     color: white;
-    text-align: center;
+    text-align: start;
   }
   svg {
     width: 18%;
