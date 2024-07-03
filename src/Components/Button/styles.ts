@@ -10,6 +10,7 @@ export const Container = styled.button<ContainerProps>`
   align-items: center;
   justify-content: center;
   height: 2.25rem;
+  width: 11rem;
   border-radius: 0.25rem;
   background-color: ${(props) =>
     props.$variant === 'default' ? color.colors.primary : 'transparent'};
