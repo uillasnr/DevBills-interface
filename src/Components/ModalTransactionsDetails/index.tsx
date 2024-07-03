@@ -6,18 +6,20 @@ import {
   Text,
   TextColor,
   Label,
-  Modal,
+  Close,
 } from './styles';
 import { Dialog } from '../Dialog';
 
 import { BsCalendar2Date } from 'react-icons/bs';
 import { TbFileDescription } from 'react-icons/tb';
+import { IoMdClose } from 'react-icons/io';
 import { FaMoneyBill, FaTags } from 'react-icons/fa';
 import { BiEditAlt } from 'react-icons/bi';
 import { formatDate } from '../../utils/formatDate';
 import { formatCurrency } from '../../utils/format-currency';
 import { BiTrendingDown, BiTrendingUp } from 'react-icons/bi';
 import { color } from '../../Styles/color';
+import { ModalObservation } from '../ModalObservation';
 
 type TransactionDetails = {
   id: number;
@@ -41,21 +43,19 @@ export function ModalTransactionsDetails({
   const [observationModalOpen, setObservationModalOpen] = useState(false);
 
   useEffect(() => {
-    setOpen(!!transactionDetails); // Concisely set open based on truthiness
+    setOpen(!!transactionDetails);
   }, [transactionDetails]);
 
   const handleObservationClick = () => {
     setObservationModalOpen(true);
   };
 
-  const handleCloseObservationModal = () => {
-    setObservationModalOpen(false);
-  };
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen} trigger={<></>}>
-        {' '}
-        {/* Improved trigger */}
+        <Close onClick={() => setOpen(false)}>
+          <IoMdClose size={20} color={color.colors.light} />
+        </Close>
         <Content>
           <h2>Detalhes da Transação</h2>
 
@@ -109,17 +109,15 @@ export function ModalTransactionsDetails({
             </div>
 
             <div onClick={handleObservationClick}>
-              {' '}
-              {/* Observation click handler */}
               <IconWrapper>
                 <BiEditAlt size={20} />
               </IconWrapper>
               <Text>
                 <label>Observação:</label>
                 <span>
-                  {transactionDetails.observation
-                    ? transactionDetails.observation
-                    : 'N/A'}
+                  <ModalObservation
+                    observation={transactionDetails.observation}
+                  />
                 </span>
               </Text>
             </div>
@@ -144,16 +142,6 @@ export function ModalTransactionsDetails({
           </Info>
         </Content>
       </Dialog>
-
-      {observationModalOpen && (
-        <Modal visible={observationModalOpen}>
-          <div>
-            <h3>Observação</h3>
-            <p>{transactionDetails.observation}</p>
-            <button onClick={handleCloseObservationModal}>x</button>
-          </div>
-        </Modal>
-      )}
     </>
   );
 }
