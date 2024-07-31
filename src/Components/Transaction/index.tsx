@@ -1,8 +1,9 @@
 import { formatCurrency } from '../../utils/format-currency';
-import { Container, Info, Content,ContainerItem } from './styles';
-import { useEffect, useState } from 'react';
-import { api } from '../../services/Api';
-import { formatDate } from '../../utils/formatDate';
+import { Container, Info, Content, ContainerItem } from './styles';
+import { ModalTransactionsDetails } from '../ModalTransactionsDetails';
+import { FaEnvelope } from 'react-icons/fa';
+import { useState } from 'react';
+import { color } from '../../Styles/color';
 
 type TransactionProps = {
   id: number;
@@ -13,50 +14,54 @@ type TransactionProps = {
     title: string;
     color: string;
   };
+  observation?: string;
   variant?: 'income' | 'expense';
 };
 
+export function Transaction({
+  id,
+  title,
+  date,
+  amount,
+  category,
+  observation,
+  variant = 'income',
+}: TransactionProps) {
+     const [selectedTransaction, setSelectedTransaction] = useState<TransactionProps | null>(null);
 
-export function Transaction() {
-  const [transactions, setTransactions] = useState<TransactionProps[]>([]);
-
-  useEffect(() => {
-    async function loadTransactions() {
-      try {
-        const response = await api.get('/transactions');
-        const { data } = response;
-      /*   console.log(data); */
-        setTransactions(data);
-      } catch (error) {
-        console.error('Error loading transactions:', error);
-      }
-    }
-
-    loadTransactions();
-  }, []);
+     const handleTransactionClick = (transaction: TransactionProps) => {
+      setSelectedTransaction(transaction);
+    };
+     
 
   return (
     <Container>
-      {transactions.map((transaction) => (
+      <ContainerItem
+        key={id} 
+        onClick={() => handleTransactionClick({ id, title, date, amount, category, variant, observation })}
+      >
+        <Info>
+          <div className="Icon"> 
+            <span>#{id.toString().padStart(4, '0')}</span>
+            {observation && <FaEnvelope size={15} color={color.colors.primary} />}
+          </div>
 
-        <ContainerItem key={transaction.id}>
-          <Info >
-           {/* <span>#{transaction.id.toString().padStart(4, '0')}</span> */}
-           <span>#123</span>
-            <div>
-              <strong>{transaction.title}</strong>
-              <span>{formatDate(transaction.date)}</span>
-            </div>
-          </Info>
+          <div>
+            <strong>{title}</strong>
+            <span>{date}</span>
+          </div>
+        </Info>
+        <Content $variant={variant} $topColor={category.color}>
+          <strong>{formatCurrency(amount)}</strong>
+          <span>{category.title.toUpperCase()}</span>
+        </Content>
+      </ContainerItem>
 
-          <Content $variant={transaction.variant} $topColor={transaction.category.color}>
-            <strong>{formatCurrency(transaction.amount)}</strong>
-            <span>{transaction.category.title.toUpperCase()}</span>
-          </Content>
-        </ContainerItem>
-
-      ))}
+        {selectedTransaction && (
+        <ModalTransactionsDetails transactionDetails={selectedTransaction} />
+      )} 
     </Container>
   );
 }
+
 
