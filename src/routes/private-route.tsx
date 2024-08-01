@@ -1,6 +1,7 @@
-import { Navigate, Outlet } from 'react-router-dom';
-import { ReactNode } from 'react';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { ReactNode, useEffect } from 'react';
 import { useFetchAPI } from '../hooks/useFetchApi';
+import { ApiService } from '../services/Api';
 
 interface PrivateRouteProps {
   children?: ReactNode;
@@ -8,6 +9,16 @@ interface PrivateRouteProps {
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const { userData, loading } = useFetchAPI();
+  const navigate = useNavigate();
+
+  const redirectToLogin = () => {
+    navigate('/login');
+  };
+
+  // Inicialize o ApiService com a função de redirecionamento
+  useEffect(() => {
+    ApiService.init(redirectToLogin);
+  }, [redirectToLogin]);
 
   if (loading) {
     // Renderiza um indicador de carregamento enquanto o estado do usuário está sendo inicializado

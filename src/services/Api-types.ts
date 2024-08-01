@@ -22,7 +22,7 @@ export type CreateCategory = {
   userId: string;
   title: string;
   color: string;
-  Icon: string;
+  Icon?: string;
 };
 
 export type Category = {

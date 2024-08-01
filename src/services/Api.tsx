@@ -14,9 +14,10 @@ import {
   User,
 } from './Api-types';
 
+
 export class ApiService {
   private static client = axios.create({
-    baseURL: 'http://localhost:3333',
+    baseURL: import.meta.env.VITE_API_URL,
     headers: {
       Authorization: '',
     },
@@ -24,6 +25,19 @@ export class ApiService {
 
   static setAuthorization(token: string) {
     this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
+
+  static init(redirectToLogin: () => void) {
+    this.client.interceptors.response.use(
+      response => response,
+      error => {
+        if (error.response && error.response.status === 401) {
+          redirectToLogin(); 
+          console.log(redirectToLogin,"teste redirect")
+        }
+        return Promise.reject(error); 
+      }
+    );
   }
 
   static async login(loginData: LoginData): Promise<User> {
@@ -155,4 +169,16 @@ export class ApiService {
     );
     return data;
   }
+  
+  static async sendMonthlyReport(email: string, month: number, year: number): Promise<any> {
+    const token = this.client.defaults.headers.common['Authorization'];
+    const { data } = await ApiService.client.get(`/transactions/monthly-report`, {
+      params: { month, year, email },
+      headers: {
+        Authorization: token,
+      },
+    });
+    return data;
+  }
+  
 }
