@@ -3,8 +3,6 @@ import { styled } from 'styled-components';
 
 type ContainerProps = {
   variant: 'balance' | 'incomes' | 'expenses';
-  title: string;
-  amount: number;
 };
 
 const variantColorMap = {
