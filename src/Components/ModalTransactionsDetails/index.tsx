@@ -41,7 +41,7 @@ export function ModalTransactionsDetails({
 }) {
   const [open, setOpen] = useState(false);
   const [observationModalOpen, setObservationModalOpen] = useState(false);
-
+console.log(observationModalOpen)
   useEffect(() => {
     setOpen(!!transactionDetails);
   }, [transactionDetails]);
