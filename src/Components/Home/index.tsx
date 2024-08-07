@@ -142,11 +142,13 @@ export function Home() {
                 placeholder="dd/mm/aaaa"
                 variant="dark"
                 label="Inicio"
-                error={
+               /*  error={
                   transactionsFilterForm.formState.errors.beginDate?.message
-                }
+                } */
                 {...transactionsFilterForm.register('beginDate')}
+                
               />
+              
               <InputMask
                 component={Input}
                 mask="dd/mm/aaaa"
@@ -154,7 +156,7 @@ export function Home() {
                 placeholder="dd/mm/aaaa"
                 variant="dark"
                 label="Fim"
-                error={transactionsFilterForm.formState.errors.endDate?.message}
+               /*  error={transactionsFilterForm.formState.errors.endDate?.message} */
                 {...transactionsFilterForm.register('endDate')}
               />
               <ButtonIcon
