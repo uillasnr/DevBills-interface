@@ -32,7 +32,7 @@ export function Login() {
     async (data: UserData) => {
       try {
         await login(data);
-        navigate('/Home');
+        navigate('/');
       } catch (error) {
         setError(
           'Credenciais inválidas. Por favor, verifique seu email e senha.',
