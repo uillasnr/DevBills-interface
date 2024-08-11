@@ -49,6 +49,14 @@ export function CardHeader() {
     };
   }, []);
 
+  const getInitials = (name: string) => {
+    const nameParts = name.split(' ');
+    if (nameParts.length >= 2) {
+      return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
+    }
+    return nameParts[0][0].toUpperCase();
+  };
+
   return (
     <Container>
       <div>
@@ -58,11 +66,12 @@ export function CardHeader() {
       <Root className="AvatarRoot">
         <Image
           className="AvatarImage"
-          src="https://tm.ibxk.com.br/2022/05/02/02121505592216.jpg"
-          alt="Colm Tuite"
+          src=""
+          alt="Avatar"
+          style={{ display: 'none' }}
         />
         <Fallback className="AvatarFallback" delayMs={600}>
-          CT
+          {userData?.name && getInitials(userData.name)}
         </Fallback>
       </Root>
 

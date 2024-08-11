@@ -47,11 +47,13 @@ export const Fallback = styled(Avatar.Fallback)`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: white;
+  background-color: ${color.colors.neutral};
   color: var(--violet-11);
   font-size: 15px;
   line-height: 1;
   font-weight: 500;
+
+
 `;
 
 export const Dropdown = styled.div`
