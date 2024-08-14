@@ -1,26 +1,21 @@
-import { color } from '../../Styles/color';
-import { Root, Trigger, Portal, Content, Close } from './styles';
-import { IoMdClose } from 'react-icons/io';
+import { Overlay, CloseButton, ModalContainer,Text, StyledSpan } from './styles';
 
-export function ModalObservation({ observation }: { observation?: string }) {
+interface ModalObservationProps {
+  observation?: string;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function ModalObservation({ observation, isOpen, onClose }: ModalObservationProps) {
+  if (!isOpen) return null;
+
   return (
-    <Root>
-      <Trigger asChild>
-        <button>{observation ? observation : 'N/A'}</button>
-      </Trigger>
-
-      <Portal>
-        {observation &&
-          observation !== 'N/A' && ( // Verifica se a observação existe e não é 'N/A'
-            <Content sideOffset={5}>
-              <h3>Observação:</h3>
-              <span>{observation ? observation : 'N/A'}</span>
-              <Close className="PopoverClose" aria-label="Close">
-                <IoMdClose size={20} color={color.colors.light} />
-              </Close>
-            </Content>
-          )}
-      </Portal>
-    </Root>
+    <Overlay onClick={onClose}>
+      <ModalContainer onClick={(e) => e.stopPropagation()}>
+        <Text>Observação:</Text>
+        < StyledSpan>{observation}</StyledSpan>
+        <CloseButton onClick={onClose}>&times;</CloseButton>
+      </ModalContainer>
+    </Overlay>
   );
 }

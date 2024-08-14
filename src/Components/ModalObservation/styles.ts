@@ -1,75 +1,64 @@
 import styled from 'styled-components';
 import { color } from '../../Styles/color';
-import * as Popover from '@radix-ui/react-popover';
 
-export const Root = styled(Popover.Root)``;
-
-export const Portal = styled(Popover.Portal)``;
-
-export const Trigger = styled(Popover.Trigger)`
-  margin-top: 2px;
-  margin-bottom: 0;
-  color: ${color.colors.neutral};
-  font-size: 0.75rem;
-  white-space: nowrap;
-  max-width: 15ch;
-  height: 1.5rem;
-  text-align: center;
-  padding: 0.3rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-color: ${color.colors.black};
-  border-radius: 0.5rem;
-  border: solid 1px ${color.colors.white};
-  border-style: dotted;
-`;
-export const Content = styled(Popover.Content)`
-  box-shadow: 0 0 0 2px var(--violet-7);
-  background-color: ${color.colors.black};
-  border-radius: 10px;
-  padding: 20px;
-  width: 20rem;
-  min-width: 20rem;
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-25%, -90%);
-
-  h3 {
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 1.2rem;
-    color: ${color.colors.light};
-  }
-  span {
-    color: ${color.colors.light};
-    font-size: 0.875rem;
-    font-weight: 400;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-  }
-
-  .PopoverClose {
-    font-family: inherit;
-    border: none;
-    display: inline-flex;
-    background-color: transparent;
-    align-items: center;
-    justify-content: center;
-
-    position: absolute;
-    top: 5px;
-    right: 5px;
-  }
-  .PopoverClose:hover {
-    background-color: var(--violet-4);
-  }
-  .PopoverClose:focus {
-    box-shadow: 0 0 0 2px var(--violet-7);
-  }
+  z-index: 1000;
 `;
-export const Close = styled(Popover.Close)``;
+
+export const ModalContainer = styled.div`
+  position: relative;
+  background-color: ${color.colors.primaryDark};
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%; 
+  max-width: 20rem; 
+  text-align: center;
+  color: #fff;
+
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
+`;
+
+export const Text = styled.h3`
+  margin-bottom: 0.5rem; 
+  text-align: center;
+  font-size: 1.2rem;
+  color: ${color.colors.light};
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+`;
+
+export const StyledSpan = styled.span`
+ color: ${color.colors.neutral};
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 300;
+  text-align: center;
+  display: block; 
+  width: 100%; 
+  max-width: 100%; 
+  overflow-wrap: break-word; 
+  word-break: break-word;
+  white-space: normal; 
+`;
