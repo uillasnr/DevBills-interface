@@ -46,6 +46,7 @@ export type CreateTransaction = {
 export type Transaction = {
   _id: string;
   userId: string;
+  categoryId: string;
   title: string;
   amount: number;
   type: 'expense' | 'income';
@@ -61,6 +62,19 @@ export type TransactionsFilter = {
   beginDate: string;
   endDate: string;
 };
+
+export type UpdateTransaction = {
+  _id: string;
+  userId: string;
+  categoryId: string;
+  title: string;
+  amount: number;
+  type: 'expense' | 'income';
+  observation?: string;
+  date: string;
+};
+
+
 
 export type Balance = {
   _id: string | null;

@@ -11,9 +11,9 @@ import {
   LoginData,
   Transaction,
   TransactionsFilter,
+  UpdateTransaction,
   User,
 } from './Api-types';
-
 
 export class ApiService {
   private static client = axios.create({
@@ -29,14 +29,14 @@ export class ApiService {
 
   static init(redirectToLogin: () => void) {
     this.client.interceptors.response.use(
-      response => response,
-      error => {
+      (response) => response,
+      (error) => {
         if (error.response && error.response.status === 401) {
-          redirectToLogin(); 
-          console.log(redirectToLogin,"teste redirect")
+          redirectToLogin();
+          console.log(redirectToLogin, 'teste redirect');
         }
-        return Promise.reject(error); 
-      }
+        return Promise.reject(error);
+      },
     );
   }
 
@@ -127,10 +127,19 @@ export class ApiService {
       },
     );
 
-    console.log('lista de transacoes', data);
     return data;
   }
 
+  static async updateTransactionDetails(transactionId: string, updateData: UpdateTransaction): Promise<Transaction> {
+    const token = this.client.defaults.headers.common['Authorization'];
+    const { data } = await this.client.put<Transaction>(`/transactions/${transactionId}`, updateData, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    return data;
+  }
+  
   static async getDashboard({
     beginDate,
     endDate,
@@ -148,7 +157,7 @@ export class ApiService {
         },
       },
     );
-    console.log('lista de deshboard', data);
+
     return data;
   }
 
@@ -169,16 +178,22 @@ export class ApiService {
     );
     return data;
   }
-  
-  static async sendMonthlyReport(email: string, month: number, year: number): Promise<any> {
+
+  static async sendMonthlyReport(
+    email: string,
+    month: number,
+    year: number,
+  ): Promise<any> {
     const token = this.client.defaults.headers.common['Authorization'];
-    const { data } = await ApiService.client.get(`/transactions/monthly-report`, {
-      params: { month, year, email },
-      headers: {
-        Authorization: token,
+    const { data } = await ApiService.client.get(
+      `/transactions/monthly-report`,
+      {
+        params: { month, year, email },
+        headers: {
+          Authorization: token,
+        },
       },
-    });
+    );
     return data;
   }
-  
 }
