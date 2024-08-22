@@ -65,6 +65,28 @@ export const createTransactionSchema = z.object({
   observation: z.string().optional(),
 });
 
+export const UpdateTransactionSchema = z.object({
+  userId: z.string().optional(),
+  categoryId: z.string().min(1, { message: 'Escolha uma categoria válida' }),
+  title: z
+    .string()
+    .min(1, { message: 'Deve conter pelo menos 1 caractere' })
+    .max(255),
+  amount: z
+    .string()
+    .min(1, { message: 'Deve conter pelo menos 1 dígito' })
+    .max(255),
+  date: z
+    .string()
+    .regex(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/, {
+      message: 'Data inválida',
+    }),
+  type: z.enum(['income', 'expense'], {
+    errorMap: () => ({ message: 'Selecione um tipo válido' }),
+  }),
+  observation: z.string().optional(),
+});
+
 export const TransactionsFilterSchema = z.object({
   userId: z.string().optional(),
   title: z.string().optional(),
