@@ -29,6 +29,17 @@ export const TextColor = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  select {
+    margin-top: 0.2rem;
+    background-color: ${color.colors.black};
+    width: 135px;
+    height: 1.5rem;
+    font-size: 0.75rem;
+    color: ${color.colors.neutral};
+    border-radius: 0.5rem;
+    margin-left: 1.5rem;
+  }
 `;
 
 export const Label = styled.label<LabelProps>`
@@ -51,6 +62,42 @@ export const Text = styled.div`
     margin-bottom: 0;
     color: ${color.colors.neutral};
     font-size: 0.75rem;
+  }
+
+  .textObservation {
+    margin-top: 2px;
+    margin-bottom: 0;
+    color: ${color.colors.neutral};
+    font-size: 0.75rem;
+    white-space: nowrap;
+    width: 8rem;
+    max-width: 15ch;
+    height: 1.5rem;
+    text-align: center;
+    padding: 0.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: ${color.colors.black};
+    border-radius: 0.5rem;
+    border: solid 1px ${color.colors.white};
+    border-style: dotted;
+  }
+
+  select {
+    width: 8rem;
+    margin-top: 2px;
+    margin-bottom: 0;
+    color: ${color.colors.neutral};
+    font-size: 0.75rem;
+    white-space: nowrap;
+    height: 1.5rem;
+    padding: 0.3rem 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: ${color.colors.black};
+    border-radius: 0.5rem;
+    border: solid 1px ${color.colors.white};
+    border-style: dotted;
   }
 `;
 
@@ -79,5 +126,40 @@ export const Close = styled.div`
   }
   .focus {
     box-shadow: 0 0 0 2px var(--violet-7);
+  }
+`;
+
+export const Input = styled.input`
+  width: 8rem;
+  margin-top: 2px;
+  margin-bottom: 0;
+  color: ${color.colors.neutral};
+  font-size: 0.75rem;
+  white-space: nowrap;
+  height: 1.5rem;
+  padding: 0.3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: ${color.colors.black};
+  border-radius: 0.5rem;
+  border: solid 1px ${color.colors.white};
+  border-style: dotted;
+`;
+
+export const EditButton = styled.button`
+  background-color: ${color.colors.primary};
+  border: 0;
+  padding: 0 0.75rem;
+  transform: all 100ms;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  width: 100%;
+  border-radius: 0.25rem;
+
+  &:hover {
+    background-color: ${color.colors.primaryDark};
   }
 `;

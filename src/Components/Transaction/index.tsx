@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { color } from '../../Styles/color';
 
 type TransactionProps = {
+  _id: string; 
   id: number;
   title: string;
   date: string;
@@ -13,12 +14,15 @@ type TransactionProps = {
   category: {
     title: string;
     color: string;
+    _id: string;
   };
   observation?: string;
-  variant?: 'income' | 'expense';
+  variant: 'income' | 'expense';
+  categoryId: string; 
 };
 
 export function Transaction({
+  _id, 
   id,
   title,
   date,
@@ -32,13 +36,13 @@ export function Transaction({
      const handleTransactionClick = (transaction: TransactionProps) => {
       setSelectedTransaction(transaction);
     };
-     
+    const categoryId = category._id;
 
   return (
     <Container>
       <ContainerItem
         key={id} 
-        onClick={() => handleTransactionClick({ id, title, date, amount, category, variant, observation })}
+        onClick={() => handleTransactionClick({  _id, id, title, date, amount, category, variant, observation,categoryId })}
       >
         <Info>
           <div className="Icon"> 
@@ -57,9 +61,16 @@ export function Transaction({
         </Content>
       </ContainerItem>
 
-        {selectedTransaction && (
-        <ModalTransactionsDetails transactionDetails={selectedTransaction} />
-      )} 
+      {selectedTransaction && (
+  <ModalTransactionsDetails 
+    transactionDetails={{
+      ...selectedTransaction,
+      categoryId: selectedTransaction.category._id,
+      variant: selectedTransaction.variant  
+    }} 
+  />
+)}
+
     </Container>
   );
 }

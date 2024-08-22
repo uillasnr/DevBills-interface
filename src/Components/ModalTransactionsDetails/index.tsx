@@ -7,21 +7,29 @@ import {
   TextColor,
   Label,
   Close,
+  Input,
+  EditButton,
 } from './styles';
 import { Dialog } from '../Dialog';
-
 import { BsCalendar2Date } from 'react-icons/bs';
 import { TbFileDescription } from 'react-icons/tb';
 import { IoMdClose } from 'react-icons/io';
 import { FaMoneyBill, FaTags } from 'react-icons/fa';
 import { BiEditAlt } from 'react-icons/bi';
-import { formatDate } from '../../utils/formatDate';
 import { formatCurrency } from '../../utils/format-currency';
 import { BiTrendingDown, BiTrendingUp } from 'react-icons/bi';
 import { color } from '../../Styles/color';
 import { ModalObservation } from '../ModalObservation';
+import { useFetchAPI } from '../../hooks/useFetchApi';
+import { UpdateTransaction } from '../../services/Api-types';
+import dayjs from 'dayjs';
+import { UpdateTransactionData } from '../../Validators/types';
+import { UpdateTransactionSchema } from '../../Validators/schemas';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type TransactionDetails = {
+  _id: string;
   id: number;
   title: string;
   date: string;
@@ -30,24 +38,96 @@ type TransactionDetails = {
     title: string;
     color: string;
   };
+  categoryId: string;
   observation?: string;
-  type?: 'income' | 'expense';
+  variant: 'income' | 'expense';
 };
 
-export function ModalTransactionsDetails({
-  transactionDetails,
-}: {
-  transactionDetails: TransactionDetails;
-}) {
+export function ModalTransactionsDetails({ transactionDetails}: {transactionDetails: TransactionDetails;}) {
+  const { updateTransaction, categories, fetchCategories, userData } = useFetchAPI();
+  
   const [open, setOpen] = useState(false);
   const [observationModalOpen, setObservationModalOpen] = useState(false);
-console.log(observationModalOpen)
+
+  // Edit states
+  const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(transactionDetails.title);
+  const [date, setDate] = useState(transactionDetails.date);
+  const [amount, setAmount] = useState(transactionDetails.amount);
+  const [category, setCategory] = useState(transactionDetails.category.title);
+  const [categoryId, setCategoryId] = useState(transactionDetails.categoryId);
+  const [type, setType] = useState<'income' | 'expense'>( transactionDetails.variant, );
+  const [observation, setObservation] = useState( transactionDetails.observation || '', );
+
+  const { register } = useForm<UpdateTransactionData>({
+    resolver: zodResolver(UpdateTransactionSchema),
+  });
+
   useEffect(() => {
-    setOpen(!!transactionDetails);
+    if (transactionDetails) {
+      setOpen(true); 
+      setTitle(transactionDetails.title);
+      setDate(transactionDetails.date);
+      setAmount(transactionDetails.amount);
+      setCategory(transactionDetails.category.title);
+      setCategoryId(transactionDetails.categoryId);
+      setType(transactionDetails.variant);
+      setObservation(transactionDetails.observation || '');
+    } else {
+      setOpen(false);
+    }
   }, [transactionDetails]);
 
   const handleObservationClick = () => {
     setObservationModalOpen(true);
+  };
+
+  const handleCloseObservationModal = () => {
+    setObservationModalOpen(false);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing((prev) => !prev);
+  };
+
+  const handleSaveChanges = async () => {
+    if (!userData) {
+      console.error('User data is missing. Cannot update transaction.');
+      return;
+    }
+
+    const adjustedAmount = type === 'expense' ? -amount : amount;
+
+    const updateData: UpdateTransaction = {
+      _id: transactionDetails._id,
+      title,
+      amount: adjustedAmount,
+      type,
+      categoryId,
+      userId: userData._id,
+      date: dayjs(date, 'DD/MM/YYYY').toISOString(),
+      observation,
+    };
+    try {
+      await updateTransaction(transactionDetails._id, updateData);
+  
+      setTimeout(() => {
+        setIsEditing(false);
+        setOpen(false);
+        setObservationModalOpen(false);
+      }, 300); 
+    } catch (error) {
+      console.error('Erro ao atualizar a transação:', error);
+    }
+  };
+
+  // Fetch categories
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const handleObservationChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setObservation(e.target.value);
   };
 
   return (
@@ -66,7 +146,14 @@ console.log(observationModalOpen)
               </IconWrapper>
               <Text>
                 <label>Título:</label>
-                <p>{transactionDetails.title}</p>
+                {isEditing ? (
+                  <Input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                ) : (
+                  <p>{title}</p>
+                )}
               </Text>
             </div>
 
@@ -76,11 +163,16 @@ console.log(observationModalOpen)
               </IconWrapper>
               <Text>
                 <label>Data:</label>
-                <p>
-                  {transactionDetails
-                    ? formatDate(transactionDetails.date)
-                    : ''}
-                </p>
+                {isEditing ? (
+                  <Input
+                    value={date}
+                    {...register('date', {
+                      onChange: (e) => setDate(e.target.value),
+                    })}
+                  />
+                ) : (
+                  <p>{date}</p>
+                )}
               </Text>
             </div>
 
@@ -90,7 +182,29 @@ console.log(observationModalOpen)
               </IconWrapper>
               <Text>
                 <label>Categoria:</label>
-                <p>{transactionDetails.category.title}</p>
+                {isEditing ? (
+                  <select
+                    value={categoryId}
+                    onChange={(e) => {
+                      const selectedCategoryId = e.target.value;
+                      const selectedCategory = categories.find(
+                        (cat) => cat._id === selectedCategoryId,
+                      );
+                      setCategory(
+                        selectedCategory ? selectedCategory.title : '',
+                      );
+                      setCategoryId(selectedCategoryId);
+                    }}
+                  >
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.title}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <p>{category}</p>
+                )}
               </Text>
             </div>
 
@@ -100,11 +214,18 @@ console.log(observationModalOpen)
               </IconWrapper>
               <Text>
                 <label>Valor:</label>
-                <p>
-                  {transactionDetails
-                    ? formatCurrency(transactionDetails.amount)
-                    : ''}
-                </p>
+                {isEditing ? (
+                  <Input
+                    type="number"
+                    value={amount}
+                    {...register('amount', {
+                      valueAsNumber: true,
+                      onChange: (e) => setAmount(Number(e.target.value)),
+                    })}
+                  />
+                ) : (
+                  <p>{formatCurrency(amount)}</p>
+                )}
               </Text>
             </div>
 
@@ -112,35 +233,77 @@ console.log(observationModalOpen)
               <IconWrapper>
                 <BiEditAlt size={20} />
               </IconWrapper>
+
               <Text>
                 <label>Observação:</label>
-                <span>
-                  <ModalObservation
-                    observation={transactionDetails.observation}
+                {isEditing ? (
+                  <Input
+                    as="textarea"
+                    value={observation}
+                    onChange={handleObservationChange}
                   />
-                </span>
+                ) : (
+                  <span className="textObservation">
+                    <ModalObservation
+                      observation={observation}
+                      isOpen={observationModalOpen}
+                      onClose={handleCloseObservationModal}
+                    />
+                    {observation && observation.trim() !== ''
+                      ? observation
+                      : 'N/A'}
+                  </span>
+                )}
               </Text>
             </div>
 
             <TextColor>
               <Label
                 labelColor={
-                  transactionDetails.type === 'income'
-                    ? color.colors.primary
-                    : color.colors.error
+                  isEditing
+                    ? type === 'income'
+                      ? color.colors.primary
+                      : color.colors.error
+                    : transactionDetails.variant === 'income'
+                      ? color.colors.primary
+                      : color.colors.error
                 }
               >
-                {transactionDetails.type === 'income' ? 'Receita:' : 'Despesa:'}
+                {isEditing
+                  ? type === 'income'
+                    ? 'Receita:'
+                    : 'Despesa:'
+                  : transactionDetails.variant === 'income'
+                    ? 'Receita:'
+                    : 'Despesa:'}
               </Label>
 
-              {transactionDetails.type === 'income' ? (
-                <BiTrendingUp size={25} color={color.colors.primary} />
+              {isEditing ? (
+                <select
+                  value={type}
+                  onChange={(e) =>
+                    setType(e.target.value as 'income' | 'expense')
+                  }
+                >
+                  <option value="income">Receita</option>
+                  <option value="expense">Despesa</option>
+                </select>
               ) : (
-                <BiTrendingDown size={25} color={color.colors.error} />
+                <>
+                  {type === 'income' ? (
+                    <BiTrendingUp size={25} color={color.colors.primary} />
+                  ) : (
+                    <BiTrendingDown size={25} color={color.colors.error} />
+                  )}
+                </>
               )}
             </TextColor>
           </Info>
         </Content>
+
+        <EditButton onClick={isEditing ? handleSaveChanges : handleEditClick}>
+          {isEditing ? 'Salvar Alterações' : 'Editar'}
+        </EditButton>
       </Dialog>
     </>
   );
