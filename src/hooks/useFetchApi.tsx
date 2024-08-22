@@ -15,6 +15,7 @@ import {
   FinancialEvolution,
   LoginData,
   Transaction,
+  UpdateTransaction,
   User,
 } from '../services/Api-types';
 import { ApiService } from '../services/Api';
@@ -40,6 +41,7 @@ interface FetchApiProps {
   fetchFinancialEvolution: (
     filters: finacialEvolutionFilterData,
   ) => Promise<void>;
+  updateTransaction: (transactionId: string, updateData: UpdateTransaction) => Promise<void>;
   categories: Category[];
   transactions: Transaction[];
   dashboard: Dashboard;
@@ -72,10 +74,8 @@ export function FetchAPIProvider({ children }: FetchAPIProviderProps) {
   }, []);
 
   useEffect(() => {
-    // Verifique se existem dados de usuário no localStorage quando o componente for montado
     const storedUserData = localStorage.getItem('userData');
     if (storedUserData) {
-      // Se existirem dados, atualize o estado do usuário
       const user = JSON.parse(storedUserData);
       setUserData(user);
       ApiService.setAuthorization(user.token);
@@ -109,6 +109,7 @@ export function FetchAPIProvider({ children }: FetchAPIProviderProps) {
         date: formatDate(data.date),
         amount: Number(data.amount.replace(/[^0-9]/g, ``)),
       });
+     
     },
     [userData],
   );
@@ -137,6 +138,7 @@ export function FetchAPIProvider({ children }: FetchAPIProviderProps) {
     }
     const data = await ApiService.getCategories(userData._id);
     setCategories(data);
+  
   }, [userData]);
 
   const fetchTransactions = useCallback(
@@ -145,17 +147,36 @@ export function FetchAPIProvider({ children }: FetchAPIProviderProps) {
         console.error('userId is required for fetching transactions');
         return;
       }
+      
       const transactions = await ApiService.getTransactions({
         userId: userData._id,
         ...filters,
         beginDate: formatDate(filters.beginDate),
         endDate: formatDate(filters.endDate),
       });
+ 
       setTransactions(transactions);
     },
     [userData],
   );
 
+  const updateTransaction = useCallback(
+    async (transactionId: string, updateData: UpdateTransaction) => {
+      if (!userData) {
+        console.error('User data is missing. Cannot update transaction.');
+        return;
+      }
+      
+      const updatedTransaction = await ApiService.updateTransactionDetails(transactionId, updateData);
+      setTransactions((prevTransactions) =>
+        prevTransactions.map((transaction) =>
+          transaction._id === transactionId ? updatedTransaction : transaction
+        )
+      );
+    },
+    [userData]
+  );
+  
   const fetchDashboard = useCallback(
     async ({
       beginDate,
@@ -197,7 +218,9 @@ export function FetchAPIProvider({ children }: FetchAPIProviderProps) {
         fetchTransactions,
         fetchCategories,
         createTransaction,
+      
         fetchFinancialEvolution,
+        updateTransaction
       }}
     >
       {children}
