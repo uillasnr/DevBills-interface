@@ -264,6 +264,7 @@ export function Home() {
                 transactions.map((item, index) => (
                   <Transaction
                     key={item._id}
+                    _id={item._id} 
                     id={index + 1}
                     amount={
                       item.type === 'expense' ? item.amount * -1 : item.amount
@@ -272,7 +273,9 @@ export function Home() {
                     category={{
                       title: item.category.title,
                       color: item.category.color,
+                      _id: item.category._id,
                     }}
+                    categoryId={item.category._id}
                     title={item.title}
                     variant={item.type}
                     observation={item.observation}
