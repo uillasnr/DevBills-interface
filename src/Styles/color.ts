@@ -1,9 +1,8 @@
 export const color = {
   colors: {
     primary: '#00ED64',
-    /* primaryDark: '#00684A', */
     primaryDark: '#464646',
-    success: '#00ED64',
+    success: '#00ED64', 
     info: '#016BF8',
     warning: '#FFC010',
     error: '#cf0d0d',
@@ -14,3 +13,4 @@ export const color = {
     black: '#292a2d',
   },
 };
+
